@@ -51,7 +51,7 @@ namespace mssql_tool_console
         [Option(shortName: 'i', longName: "dbname", Required = true, HelpText = "Database server")]
         public String DbName { get; set; }
 
-        [Option(shortName: 'd', longName: "include-data", Default = true, Required = false, HelpText = "Include data")]
+        [Option(shortName: 'd', longName: "include-data", Default = false, Required = false, HelpText = "Include data")]
         public bool IncludeData { get; set; }
 
         [Option(shortName: 'l', longName: "seperate-schema-data", Default = false, Required = false, HelpText = "Seperate schema and data script")]
