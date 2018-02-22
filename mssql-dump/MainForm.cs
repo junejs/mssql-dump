@@ -8,14 +8,18 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
-namespace mssql_tool
+namespace mssql_dump
 {
     public partial class MainForm : Form
     {
+        private SynchronizationContext _uiSyncContext;
         public MainForm()
         {
             InitializeComponent();
+            _uiSyncContext = SynchronizationContext.Current;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -33,6 +37,9 @@ namespace mssql_tool
 
         private void dumpButton_Click(object sender, EventArgs e)
         {
+            LoadingForm loadingForm = new LoadingForm();
+            loadingForm.SetMsg("Generating script, please wait...");
+
             var dbInfo = getDbInfo();
             try
             {
@@ -43,6 +50,9 @@ namespace mssql_tool
                 {
                     return;
                 }
+
+            
+                loadingForm.Show();
 
                 string dir = folderDiaglog.SelectedPath;
                 bool includeData = includeDataCheckBox.Checked;
@@ -55,6 +65,10 @@ namespace mssql_tool
             catch (Exception ex)
             {
                 MessageBox.Show("Dump failed." + ex.Message);
+            }
+            finally
+            {
+                loadingForm.Close();
             }
 
             IStoreService storeService = new StoreService();
@@ -70,15 +84,34 @@ namespace mssql_tool
             ssb.Password = dbInfo.Password;
             ssb.InitialCatalog = "master";
 
-            using (IDbConnection conn = new SqlConnection(ssb.ConnectionString))
+            Task.Factory.StartNew<List<string>>(() =>
             {
-                var result = conn.Query<string>("select name from sys.databases").ToList();
-                if (dbNameComboBox.DataSource == null
-                    || !result.SequenceEqual(dbNameComboBox.DataSource as List<string>))
+                using (IDbConnection conn = new SqlConnection(ssb.ConnectionString))
                 {
-                    dbNameComboBox.DataSource = result;
+                    try
+                    {
+                        return conn.Query<string>("select name from sys.databases").ToList();
+                    }
+                    catch
+                    {
+                        return null;
+                    }
                 }
-            }
+            })
+            .ContinueWith(t =>
+            {
+                _uiSyncContext.Post(state =>
+                {
+                    var dbNames = state as List<string>;
+                    if (dbNames == null)
+                    {
+                        return;
+                    }
+
+                    dbNameComboBox.Items.Clear();
+                    dbNameComboBox.Items.AddRange(dbNames.ToArray());
+                }, t.Result);
+            });
         }
 
         private DbInfo getDbInfo()

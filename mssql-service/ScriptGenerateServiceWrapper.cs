@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mssql_service
 {
@@ -12,26 +8,49 @@ namespace mssql_service
         public static void Generate(DbInfo dbInfo, bool includeData, bool seperateSchemaAndData, string outputDir)
         {
             Directory.CreateDirectory(outputDir);
+            string schemaFileName = null, dataFileName = null;
             TextWriter twForSchema = null, twForData = null;
             try
             {
                 if (seperateSchemaAndData)
                 {
-                    twForSchema = File.CreateText(Path.Combine(outputDir, $"{dbInfo.DbName}-schema.sql"));
-                    twForData = File.CreateText(Path.Combine(outputDir, $"{dbInfo.DbName}-data.sql"));
+                    schemaFileName = Path.Combine(outputDir, $"{dbInfo.DbName}-schema.sql");
+                    twForSchema = File.CreateText(schemaFileName);
+                    dataFileName = Path.Combine(outputDir, $"{dbInfo.DbName}-data.sql");
+                    twForData = File.CreateText(dataFileName);
                 }
                 else
                 {
-                    twForSchema = twForData = File.CreateText(Path.Combine(outputDir, $"{dbInfo.DbName}.sql"));
+                    schemaFileName = dataFileName = Path.Combine(outputDir, $"{dbInfo.DbName}.sql");
+                    twForSchema = twForData = File.CreateText(schemaFileName);
                 }
 
                 IScriptService scriptService = new SmoService();
+
                 scriptService.GenerateSchema(dbInfo, twForSchema);
+                twForSchema.Flush();
 
                 if (includeData)
                 {
                     scriptService.GenerateData(dbInfo, twForData);
+                    twForData.Flush();
                 }
+            }
+            catch (Exception e)
+            {
+                // clean up 
+                try
+                {
+                    twForSchema?.Close();
+                    twForData?.Close();
+                    File.Delete(schemaFileName);
+                    File.Delete(dataFileName);
+                }
+                catch
+                {
+                }
+
+                throw e;
             }
             finally
             {

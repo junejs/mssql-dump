@@ -1,4 +1,4 @@
-﻿namespace mssql_tool
+﻿namespace mssql_dump
 {
     partial class MainForm
     {

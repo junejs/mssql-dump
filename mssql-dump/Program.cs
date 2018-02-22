@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace mssql_tool
+namespace mssql_dump
 {
     static class Program
     {

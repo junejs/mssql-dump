@@ -2,6 +2,7 @@
 using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,27 +21,20 @@ namespace mssql_service
                 throw new Exception($"数据库 {dbInfo.DbName} 不存在.");
             }
 
-            Scripter scrp = new Scripter(srv);
-            scrp.Options.ScriptData = true;
-            scrp.Options.ScriptSchema = false;
-
-            var smoTables = db.Tables.Cast<Table>().Where(t => !t.IsSystemObject).ToList();
-            var dependencyWalker = new DependencyWalker(db.Parent);
-            var dependencyTree = dependencyWalker.DiscoverDependencies(smoTables.Cast<SqlSmoObject>().ToArray(), DependencyType.Parents);
-            var dependencyCollection = dependencyWalker.WalkDependencies(dependencyTree);
+            Scripter scripter = new Scripter(srv);
+            scripter.Options.ScriptData = true;
+            scripter.Options.ScriptSchema = false;
 
             textWriter.WriteLine("-----------------------------------------");
             textWriter.WriteLine("-----------------data--------------------");
             textWriter.WriteLine("-----------------------------------------");
-            Scripter scrForData = new Scripter(srv);
-            scrForData.Options.ScriptData = true;
-            scrForData.Options.ScriptSchema = false;
-            foreach (DependencyCollectionNode dependencyCollectionNode in dependencyCollection)
+            foreach (Urn table in getTableUrnWithDependence(db))
             {
-                var sc = scrForData.EnumScript(new Urn[] { dependencyCollectionNode.Urn });
+                Console.WriteLine();
+                var sc = scripter.EnumScript(new Urn[] { table });
                 foreach (string st in sc)
                 {
-                    Debug.WriteLine(st);
+                    Console.WriteLine(st);
                     textWriter.WriteLine(st);
                 }
             }
@@ -53,46 +47,42 @@ namespace mssql_service
             Database db = srv.Databases[dbInfo.DbName];
             if (db == null)
             {
-                throw new Exception($"数据库 {dbInfo.DbName} 不存在.");
+                throw new Exception($"Database {dbInfo.DbName} not exists.");
             }
-            Scripter scrp = new Scripter(srv);
-            scrp.Options.NoCollation = true;
-            scrp.Options.Indexes = true;
-            scrp.Options.ClusteredIndexes = true;
-            scrp.Options.NonClusteredIndexes = true;
-            scrp.Options.DriAll = true;
-            scrp.Options.DriAllConstraints = true;
 
-            scrp.Options.Triggers = true;
-            scrp.Options.FullTextIndexes = true;
+            Scripter scripter = new Scripter(srv);
 
-            scrp.Options.AllowSystemObjects = false;
-            scrp.Options.WithDependencies = false;
+            scripter.Options.NoCollation = true;
+            scripter.Options.Indexes = true;
+            scripter.Options.ClusteredIndexes = true;
+            scripter.Options.NonClusteredIndexes = true;
+            scripter.Options.DriAll = true;
+            scripter.Options.DriAllConstraints = true;
 
-            scrp.Options.TargetDatabaseEngineEdition = DatabaseEngineEdition.Standard;
-            scrp.Options.TargetDatabaseEngineType = DatabaseEngineType.Standalone;
+            scripter.Options.Triggers = true;
+            scripter.Options.FullTextIndexes = true;
 
-            scrp.Options.ExtendedProperties = true;
+            scripter.Options.AllowSystemObjects = false;
+            scripter.Options.WithDependencies = false;
 
-            scrp.Options.ScriptDrops = false;
-            scrp.Options.ScriptSchema = true;
-            scrp.Options.ScriptData = false;
+            scripter.Options.TargetDatabaseEngineEdition = DatabaseEngineEdition.Standard;
+            scripter.Options.TargetDatabaseEngineType = DatabaseEngineType.Standalone;
 
-            var smoTables = db.Tables.Cast<Table>().Where(t => !t.IsSystemObject).ToList();
-            var dependencyWalker = new DependencyWalker(db.Parent);
-            var dependencyTree = dependencyWalker.DiscoverDependencies(smoTables.Cast<SqlSmoObject>().ToArray(), DependencyType.Parents);
-            var dependencyCollection = dependencyWalker.WalkDependencies(dependencyTree);
+            scripter.Options.ExtendedProperties = true;
+
+            scripter.Options.ScriptDrops = false;
+            scripter.Options.ScriptSchema = true;
+            scripter.Options.ScriptData = false;
 
             textWriter.WriteLine("-----------------------------------------");
             textWriter.WriteLine("-----------------schema------------------");
             textWriter.WriteLine("-----------------------------------------");
-            foreach (DependencyCollectionNode dependencyCollectionNode in dependencyCollection)
+            foreach (Urn table in getTableUrnWithDependence(db))
             {
-                Debug.WriteLine(dependencyCollectionNode.Urn);
-                System.Collections.Specialized.StringCollection sc = scrp.Script(new Urn[] { dependencyCollectionNode.Urn });
+                System.Collections.Specialized.StringCollection sc = scripter.Script(new Urn[] { table });
                 foreach (string st in sc)
                 {
-                    Debug.WriteLine(st);
+                    Console.WriteLine(st);
                     textWriter.WriteLine(st);
                 }
             }
@@ -103,13 +93,23 @@ namespace mssql_service
             textWriter.WriteLine("-----------------------------------------");
             foreach (var procedureSmo in smoProcedures)
             {
-                System.Collections.Specialized.StringCollection sc = scrp.Script(new Urn[] { procedureSmo.Urn });
+                System.Collections.Specialized.StringCollection sc = scripter.Script(new Urn[] { procedureSmo.Urn });
                 foreach (string st in sc)
                 {
-                    Debug.WriteLine(st);
+                    Console.WriteLine(st);
                     textWriter.WriteLine(st);
                 }
             }
+        }
+
+        private List<Urn> getTableUrnWithDependence(Database db)
+        {
+            var smoTables = db.Tables.Cast<Table>().Where(t => !t.IsSystemObject).ToList();
+            var dependencyWalker = new DependencyWalker(db.Parent);
+            var dependencyTree = dependencyWalker.DiscoverDependencies(smoTables.Cast<SqlSmoObject>().ToArray(), DependencyType.Parents);
+            var dependencyCollection = dependencyWalker.WalkDependencies(dependencyTree);
+
+            return dependencyCollection.Select(d => d.Urn).ToList();
         }
     }
 }
