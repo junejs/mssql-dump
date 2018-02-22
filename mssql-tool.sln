@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mssql-tool-ui", "mssql-dump-ui\mssql-tool-ui.csproj", "{AF1BF6DB-0337-40D7-818B-474BEF6E273E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mssql-dump-ui", "mssql-dump-ui\mssql-dump-ui.csproj", "{AF1BF6DB-0337-40D7-818B-474BEF6E273E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mssql-service", "mssql-service\mssql-service.csproj", "{7A837E1D-A59C-4D2C-90D3-DCD221400706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mssql-tool-console", "mssql-tool-console\mssql-tool-console.csproj", "{3B0ADEE9-A791-4D9D-A885-22CAB8DC3321}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mssql-dump-console", "mssql-dump-console\mssql-dump-console.csproj", "{3B0ADEE9-A791-4D9D-A885-22CAB8DC3321}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

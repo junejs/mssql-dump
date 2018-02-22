@@ -37,6 +37,7 @@ namespace mssql_service
                     Console.WriteLine(st);
                     textWriter.WriteLine(st);
                 }
+                textWriter.WriteLine("GO");
             }
         }
 
@@ -84,6 +85,7 @@ namespace mssql_service
                 {
                     Console.WriteLine(st);
                     textWriter.WriteLine(st);
+                    textWriter.WriteLine("GO");
                 }
             }
 
@@ -98,6 +100,7 @@ namespace mssql_service
                 {
                     Console.WriteLine(st);
                     textWriter.WriteLine(st);
+                    textWriter.WriteLine("GO");
                 }
             }
         }
