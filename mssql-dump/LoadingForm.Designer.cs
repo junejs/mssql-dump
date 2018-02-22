@@ -33,13 +33,14 @@
             // 
             // msgLabel
             // 
-            this.msgLabel.AutoSize = true;
+            this.msgLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.msgLabel.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.msgLabel.Location = new System.Drawing.Point(84, 38);
+            this.msgLabel.Location = new System.Drawing.Point(0, 0);
             this.msgLabel.Name = "msgLabel";
-            this.msgLabel.Size = new System.Drawing.Size(145, 17);
+            this.msgLabel.Size = new System.Drawing.Size(331, 99);
             this.msgLabel.TabIndex = 0;
             this.msgLabel.Text = "this is loading message";
+            this.msgLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LoadingForm
             // 
@@ -60,7 +61,6 @@
             this.TopMost = true;
             this.Load += new System.EventHandler(this.LoadingForm_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
