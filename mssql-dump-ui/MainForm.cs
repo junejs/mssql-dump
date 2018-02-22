@@ -52,7 +52,7 @@ namespace mssql_dump
                 }
 
             
-                loadingForm.Show();
+                loadingForm.Show(this);
 
                 string dir = folderDiaglog.SelectedPath;
                 bool includeData = includeDataCheckBox.Checked;

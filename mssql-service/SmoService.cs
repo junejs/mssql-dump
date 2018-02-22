@@ -37,7 +37,10 @@ namespace mssql_service
                     Console.WriteLine(st);
                     textWriter.WriteLine(st);
                 }
-                textWriter.WriteLine("GO");
+                if (sc.Count() > 0)
+                {
+                    textWriter.WriteLine("GO");
+                }
             }
         }
 
