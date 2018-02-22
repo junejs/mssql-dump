@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace mssql_service
 {
-    public class StoreService
+    public class StoreService : IStoreService
     {
         private string _storeDir;
         public StoreService()

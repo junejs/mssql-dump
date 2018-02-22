@@ -20,7 +20,8 @@ namespace mssql_tool
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            var dbInfo = new StoreService().Load<DbInfo>("dbinfo-userinput");
+            IStoreService storeService = new StoreService();
+            var dbInfo = storeService.Load<DbInfo>("dbinfo-userinput");
             if (dbInfo != null)
             {
                 serverTextBox.Text = dbInfo.Server;
@@ -33,7 +34,6 @@ namespace mssql_tool
         private void dumpButton_Click(object sender, EventArgs e)
         {
             var dbInfo = getDbInfo();
-            TextWriter twForSchema = null, twForData = null;
             try
             {
                 var folderDiaglog = new FolderBrowserDialog();
@@ -45,26 +45,10 @@ namespace mssql_tool
                 }
 
                 string dir = folderDiaglog.SelectedPath;
-
-                bool seperateSchemaAndData = schemaDataSeperateCheckBox.Checked;
-                if (seperateSchemaAndData)
-                {
-                    twForSchema = File.CreateText(Path.Combine(dir, $"{dbInfo.DbName}-schema.sql"));
-                    twForData = File.CreateText(Path.Combine(dir, $"{dbInfo.DbName}-data.sql"));
-                }
-                else
-                {
-                    twForSchema = twForData = File.CreateText(Path.Combine(dir, $"{dbInfo.DbName}.sql"));
-                }
-
-                IScriptService scriptService = new SmoService();
-                scriptService.GenerateSchema(dbInfo, twForSchema);
-
                 bool includeData = includeDataCheckBox.Checked;
-                if (includeData)
-                {
-                    scriptService.GenerateData(dbInfo, twForData);
-                }
+                bool seperateSchemaAndData = schemaDataSeperateCheckBox.Checked;
+
+                ScriptGenerateServiceWrapper.Generate(dbInfo, includeData, seperateSchemaAndData, dir);
 
                 Process.Start(dir);
             }
@@ -72,13 +56,9 @@ namespace mssql_tool
             {
                 MessageBox.Show("Dump failed." + ex.Message);
             }
-            finally
-            {
-                twForSchema?.Dispose();
-                twForData?.Dispose();
-            }
 
-            new StoreService().Save("dbinfo-userinput", dbInfo);
+            IStoreService storeService = new StoreService();
+            storeService.Save("dbinfo-userinput", dbInfo);
         }
 
         private void dbNameComboBox_Click(object sender, EventArgs e)

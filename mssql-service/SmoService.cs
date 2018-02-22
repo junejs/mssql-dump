@@ -1,6 +1,7 @@
 ﻿using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,10 @@ namespace mssql_service
             var serverConn = new ServerConnection(dbInfo.Server, dbInfo.UserId, dbInfo.Password);
             Server srv = new Server(serverConn);
             Database db = srv.Databases[dbInfo.DbName];
+            if (db == null)
+            {
+                throw new Exception($"数据库 {dbInfo.DbName} 不存在.");
+            }
 
             Scripter scrp = new Scripter(srv);
             scrp.Options.ScriptData = true;
@@ -46,7 +51,10 @@ namespace mssql_service
             var serverConn = new ServerConnection(dbInfo.Server, dbInfo.UserId, dbInfo.Password);
             Server srv = new Server(serverConn);
             Database db = srv.Databases[dbInfo.DbName];
-
+            if (db == null)
+            {
+                throw new Exception($"数据库 {dbInfo.DbName} 不存在.");
+            }
             Scripter scrp = new Scripter(srv);
             scrp.Options.NoCollation = true;
             scrp.Options.Indexes = true;

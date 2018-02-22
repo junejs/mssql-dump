@@ -140,7 +140,9 @@
   <ItemGroup>
     <Compile Include="DbInfo.cs" />
     <Compile Include="IScriptService.cs" />
+    <Compile Include="IStoreService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptGenerateServiceWrapper.cs" />
     <Compile Include="SmoService.cs" />
     <Compile Include="StoreService.cs" />
   </ItemGroup>
