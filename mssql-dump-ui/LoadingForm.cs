@@ -22,12 +22,14 @@ namespace mssql_dump
 
         }
 
-        public new void Show(Form parent)
+        public void Show(Form parent)
         {
-            int x = (int)((parent.Location.X - Location.X) / 2);
-            int y = (int)((parent.Location.Y - Location.Y) / 2);
+            // center self to parent
+            int x = (parent.Location.X - Location.X) / 2;
+            int y = (parent.Location.Y - Location.Y) / 2;
             Location = new Point(x, y);
-            base.Show();
+
+            Show();
             this.Refresh();
         }
 
