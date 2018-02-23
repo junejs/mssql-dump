@@ -7,7 +7,7 @@
     <ProjectGuid>{3B0ADEE9-A791-4D9D-A885-22CAB8DC3321}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>mssql_tool_console</RootNamespace>
-    <AssemblyName>mssql-tool-console</AssemblyName>
+    <AssemblyName>mssql-dump-console</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
