@@ -43,8 +43,8 @@
             this.schemaDataSeperateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -187,23 +187,23 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(22, 46);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(172, 17);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "- Script name: [dbName].sql";
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(22, 90);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(338, 17);
+            this.label6.Size = new System.Drawing.Size(340, 17);
             this.label6.TabIndex = 3;
-            this.label6.Text = "- Script name: [dbName]-schema.sql, [dbName]-data.sql";
+            this.label6.Text = "- Script name: [DbName]-schema.sql, [DbName]-data.sql";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(22, 46);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(173, 17);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "- Script name: [DbName].sql";
             // 
             // MainForm
             // 

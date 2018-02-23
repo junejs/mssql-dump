@@ -18,7 +18,7 @@ namespace mssql_service
             Database db = srv.Databases[dbInfo.DbName];
             if (db == null)
             {
-                throw new Exception($"数据库 {dbInfo.DbName} 不存在.");
+                throw new Exception($"Database {dbInfo.DbName} not exists.");
             }
 
             Scripter scripter = new Scripter(srv);
