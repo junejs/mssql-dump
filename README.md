@@ -1,2 +1,2 @@
 # mssql-dump
-Dump tool for Microsoft Sqlserver
+Dump tool for Microsoft SQL Server
